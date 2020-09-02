@@ -39,28 +39,35 @@ public class ServerJobTask {
 			this.streamTaskObject = this.streamTaskQueue.get();
 			if (Flag.flag) log.info("KANG-20200902 >>>>> 1. GET_SOCKET {} {}", param, CurrentInfo.get());
 			
-			while (true) {
-				StreamObject req = this.streamTaskObject.recvStream();
-				if (Flag.flag) log.info("KANG-20200902 >>>>> 2. RECV_REQ_STREAM {} {}", param, CurrentInfo.get());
-				if (Flag.flag) JsonPrint.getInstance().printPrettyJson(req);
-				
-				if (Flag.flag) Sleep.run(1000);
-				
-				StreamObject res = null;
-				if (Flag.flag) {
-					// make res
-					StringBuffer sb = new StringBuffer();
-					sb.append("RES");
-					sb.append("1234567890");
-					sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-					sb.insert(0, String.format("%04d", sb.length()));
+			try {
+				while (true) {
+					StreamObject req = this.streamTaskObject.recvStream();
+					if (Flag.flag) log.info("KANG-20200902 >>>>> 2. RECV_REQ_STREAM {} {}", param, CurrentInfo.get());
+					if (Flag.flag) JsonPrint.getInstance().printPrettyJson(">>>>> REQUEST: ", req);
 					
-					res = new StreamObject(sb.toString());
+					if (Flag.flag) Sleep.run(1000);
+					
+					StreamObject res = null;
+					if (Flag.flag) {
+						// make res
+						StringBuffer sb = new StringBuffer();
+						sb.append("RES");
+						sb.append("1234567890");
+						sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+						sb.insert(0, String.format("%04d", sb.length()));
+						
+						res = new StreamObject(sb.toString());
+					}
+					if (Flag.flag) log.info("KANG-20200902 >>>>> 3. MADE_RES_STREAM {} {}", param, CurrentInfo.get());
+					
+					this.streamTaskObject.sendStream(res);
+					if (Flag.flag) log.info("KANG-20200902 >>>>> 4. SEND_RES_STREAM {} {}", param, CurrentInfo.get());
+					if (Flag.flag) JsonPrint.getInstance().printPrettyJson(">>>>> RESPONSE: ", res);
 				}
-				if (Flag.flag) log.info("KANG-20200902 >>>>> 3. MADE_RES_STREAM {} {}", param, CurrentInfo.get());
-				
-				this.streamTaskObject.sendStream(res);
-				if (Flag.flag) log.info("KANG-20200902 >>>>> 4. SEND_RES_STREAM {} {}", param, CurrentInfo.get());
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				this.streamTaskObject.close();
 			}
 		}
 		

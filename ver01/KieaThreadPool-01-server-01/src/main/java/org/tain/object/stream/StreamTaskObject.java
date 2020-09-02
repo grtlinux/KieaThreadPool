@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.tain.utils.Flag;
 import org.tain.utils.Sleep;
 
 public class StreamTaskObject {
@@ -47,19 +48,6 @@ public class StreamTaskObject {
 	
 	private static int DEFAULT_LENGTH_SIZE = 4;
 	
-	public StreamObject recvStream() {
-		StreamObject streamObject = null;
-		try {
-			String strLength = this.recvLength(DEFAULT_LENGTH_SIZE);
-			int length = Integer.parseInt(strLength);
-			String strData = this.recvData(length);
-			streamObject = new StreamObject(strLength + strData);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return streamObject;
-	}
-	
 	private String recvLength(int length) throws Exception {
 		byte[] bytLength = this.recv(length);
 		String strLength = new String(bytLength, "UTF-8");
@@ -72,19 +60,57 @@ public class StreamTaskObject {
 		return strData;
 	}
 	
+	public StreamObject recvStream() throws Exception {
+		StreamObject streamObject = null;
+		
+		if (!Flag.flag) {
+			/*
+			try {
+				String strLength = this.recvLength(DEFAULT_LENGTH_SIZE);
+				int length = Integer.parseInt(strLength);
+				String strData = this.recvData(length);
+				streamObject = new StreamObject(strLength + strData);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			*/
+		}
+		
+		if (Flag.flag) {
+			String strLength = this.recvLength(DEFAULT_LENGTH_SIZE);
+			int length = Integer.parseInt(strLength);
+			String strData = this.recvData(length);
+			streamObject = new StreamObject(strLength + strData);
+		}
+		
+		return streamObject;
+	}
+	
 	///////////////////////////////////////////////////////////
 	// sendPacket
 	
-	public StreamObject sendStream(StreamObject streamObject) {
-		try {
-			byte[] bytPacket = streamObject.getData().getBytes();
+	public StreamObject sendStream(StreamObject streamObject) throws Exception {
+		if (!Flag.flag) {
+			/*
+			try {
+				byte[] bytPacket = streamObject.getStream().getBytes();
+				int nsend = this.send(bytPacket);
+				if (nsend != streamObject.getLength() + DEFAULT_LENGTH_SIZE) {
+					throw new IOException("ERROR: wrong send");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				streamObject = null;
+			}
+			*/
+		}
+		
+		if (Flag.flag) {
+			byte[] bytPacket = streamObject.getStream().getBytes();
 			int nsend = this.send(bytPacket);
-			if (nsend != streamObject.getLength()) {
+			if (nsend != streamObject.getLength() + DEFAULT_LENGTH_SIZE) {
 				throw new IOException("ERROR: wrong send");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			streamObject = null;
 		}
 		
 		return streamObject;
