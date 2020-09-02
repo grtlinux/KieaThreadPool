@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.tain.utils.CurrentInfo;
 import org.tain.utils.Flag;
 import org.tain.working.DataSourceWorking;
@@ -29,7 +28,7 @@ public class KieaThreadPool00First01Application implements CommandLineRunner {
 		if (Flag.flag) log.info("KANG-20200902 >>>>> {} {}", CurrentInfo.get());
 		
 		if (Flag.flag) job01();
-		if (!Flag.flag) job02();
+		if (Flag.flag) job02();
 		if (Flag.flag) job03();
 		if (Flag.flag) job04();
 		if (Flag.flag) job05();
