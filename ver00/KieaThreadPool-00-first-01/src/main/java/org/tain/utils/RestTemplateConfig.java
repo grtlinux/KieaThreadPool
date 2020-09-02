@@ -86,3 +86,132 @@ public class RestTemplateConfig {
 		return new RestTemplate(httpRequestFactory);
 	}
 }
+
+/*
+// 2020-09-02
+TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+	public X509Certificate[] getAcceptedIssuers(){return new X509Certificate[0];}
+	public void checkClientTrusted(X509Certificate[] certs, String authType){}
+	public void checkServerTrusted(X509Certificate[] certs, String authType){}
+}};
+
+SSLContext sc = SSLContext.getInstance("TLS");
+sc.init(null, trustAllCerts, new SecureRandom());
+HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+--------------------------------------------
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import javax.net.ssl.*;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        try {
+            new Main().crawler("http://trandent.com");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void crawler(String domain) throws Exception {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+            public X509Certificate[] getAcceptedIssuers(){return new X509Certificate[0];}
+            public void checkClientTrusted(X509Certificate[] certs, String authType){}
+            public void checkServerTrusted(X509Certificate[] certs, String authType){}
+        }};
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        Document doc = null;
+        try{
+            doc = Jsoup.connect(domain).get();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+
+--------------------------------------------
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class Main {
+    public static void main(String[] args) {
+    }
+
+    public void crawler(String domain) extends Thread{
+        try{
+            Document doc = Jsoup.connect(domain).get();
+            Elements img = doc.getElementsByTag("img");
+            for (Element el : img) {
+                String src = el.absUrl("src");
+                System.out.println("Image Found!");
+                System.out.println("src attribute is : "+src);
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+--------------------------------------------
+public static void sendPost(String parameters) throws Exception {
+    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+        public X509Certificate[] getAcceptedIssuers(){return new X509Certificate[0];}
+        public void checkClientTrusted(X509Certificate[] certs, String authType){}
+        public void checkServerTrusted(X509Certificate[] certs, String authType){}
+    }};
+    SSLContext sc = SSLContext.getInstance("TLS");
+    sc.init(null, trustAllCerts, new SecureRandom());
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+    String url = "https://url";
+    URL obj = new URL(url);
+    HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+
+    //add reuqest header
+    con.setRequestMethod("POST");
+
+    String urlParameters = parameters;
+
+    // Send post request
+    con.setDoOutput(true);
+    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+    wr.write(urlParameters.getBytes("UTF-8"));
+    wr.flush();
+    wr.close();
+
+    int responseCode = con.getResponseCode();
+    System.out.println("\nSending 'POST' request to URL : " + url);
+    System.out.println("Post parameters : " + urlParameters);
+    System.out.println("Response Code : " + responseCode);
+
+    BufferedReader in = new BufferedReader(
+      new InputStreamReader(con.getInputStream()));
+    String inputLine;
+    StringBuffer response = new StringBuffer();
+
+    while ((inputLine = in.readLine()) != null) {
+        response.append(inputLine);
+    }
+    in.close();
+
+    //print result
+    System.out.println(response.toString());
+}
+
+
+
+
+
+
+
+*/
+
