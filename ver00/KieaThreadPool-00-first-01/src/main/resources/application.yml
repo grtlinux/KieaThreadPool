@@ -56,8 +56,9 @@ logging:
     max-size: 10MB
     max-history: 30
   pattern:
+    #console: "%clr(%d{HH:mm:ss} %p %c){magenta} - %m%n"
     console: "%clr(%d{HH:mm:ss} %p){magenta} - %m%n"
-    file: "%d %-5level [%-10thread] [%-30level{30}] - %m%n"
+    file: "%d %-5level [%-10thread] [%-30logger{30}] - %m%n"
   level:
     root: info
     org.tain.*: info
